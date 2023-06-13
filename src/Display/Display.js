@@ -7,7 +7,7 @@ import BFPointer from "../Game/BFPointer.js";
 export default class Display {
     /** @type {Canvas} */ canvas;
     /** @type {Vector} */ position;
-    /** @type {number} */ zoom = 1;
+    /** @type {number} */ zoom = 2;
     /** @type {boolean} */ follow = false;
 
     /**
@@ -25,7 +25,7 @@ export default class Display {
     drawCase(pointer, value) {
         this.canvas.save();
         this.canvas.ctx.translate(pointer, 0);
-        this.canvas.ctx.scale(1/2, 1/2);
+        this.canvas.ctx.scale(.475, .475);
         this.canvas.polygon({
             points: [[-1, -1], [ 1, -1], [ 1,  1], [-1,  1]],
             filled: true,
@@ -34,7 +34,7 @@ export default class Display {
             color_stroke: "#000",
         });
         this.canvas.ctx.scale(1/16, 1/16);
-        this.canvas.text(value, 0, 0, "16px Arial", "#000");
+        this.canvas.text(value, 0, 0, "15px Arial", "#000");
         this.canvas.text(`${pointer}`, -16, -18, "6px Arial", "#000", ["left", "bottom"]);
         this.canvas.restore();
     }
