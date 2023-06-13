@@ -13,7 +13,7 @@ export default function Memory(_startPointer = 0) {
 
     /////////////////////////////////////////////
 
-    this.events.set("get", "set", "reset", "move");
+    this.events.set("get", "set", "clear", "move");
 
     /**
      * @param {EventName} event_name
@@ -42,14 +42,10 @@ export default function Memory(_startPointer = 0) {
         this._startPointer = _startPointer;
         this._pointer = _startPointer;
     }
-    this.reset = function () {
+    this.clear = function () {
         this._pointer = _startPointer;
         this._data = {};
-        this.events.emit("reset");
-    }
-    this.clear = function () {
-        this._pointer = 0;
-        this._data = {};
+        this.events.emit("clear");
     }
 
     /////////////////////////////////////////////

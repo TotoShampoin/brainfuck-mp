@@ -32,7 +32,7 @@ export function makeEvents(brainfuck, memory, io) {
         brainfuck.stop();
     });
     $reset.addEventListener("click", e => {
-        memory.reset();
+        memory.clear();
     });
     $interval.addEventListener("change", e => {
         brainfuck.setDelay($interval.value);

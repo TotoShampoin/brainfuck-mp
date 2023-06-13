@@ -17,6 +17,10 @@ brainfuck.on("delay-change", delay => {
 memory.on("move", pointer => {
     me.setPointer(pointer);
 });
+memory.on("clear", () => {
+    me.setPointer(memory._startPointer);
+    me.op_code = "";
+});
 
 brainfuck.setDelay(100);
 makeEvents(brainfuck, memory, io);
