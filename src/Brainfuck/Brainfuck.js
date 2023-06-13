@@ -1,23 +1,75 @@
 // Code derived from https://www.npmjs.com/package/brainfuck-js
 
-import Memory from "./libs/brainfuck-js/memory.js";
-import Code from "./libs/brainfuck-js/code.js";
+import Code from "./Code.js";
+import Memory from "./Memory.js";
+import InputOutput from "./InputOutput.js";
+import EventManager from './EventManager.js';
 
-export default function OnlineBrainfuck(_memory, _delay = 0) {
-    /** @type {Memory} */
-    this.memory = _memory;
+/** @typedef {"operation"} EventName */
+/** @typedef {">"|"<"|"+"|"-"|"."|","|"["|"]"} BFOpCode */
+/** 
+ * @typedef {Object} OperationEvent
+ * @property {BFOpCode} opcode
+ * @property {number} pointer
+ * @property {number} value
+ */
+
+/**
+ * @param {Memory} memory
+ * @param {InputOutput} input_output
+ */
+export default function Brainfuck(memory, input_output) {
+    this.memory = memory ?? new Memory();
+    this.io = input_output;
     this.code = new Code();
+    this.events = new EventManager();
     this._stop = false;
     this._isRunning = false;
-    this._delay = _delay;
+    this._delay = 0;
+
+    /////////////////////////////////////////////
+
+    this.events.set("operation");
+
+    const action = (opcode) => ({
+        opcode,
+        pointer: this.memory._pointer,
+        value: this.memory.get(),
+        char: String.fromCharCode(this.memory.get())
+    });
+
+    /**
+     * @param {EventName} event_name
+     * @param {(event: OperationEvent) => void} callback {@link EventfulMemoryName}
+     * @returns {void}
+     */
+    this.on = function (event_name, callback) {
+        this.events.on(event_name, callback);
+    }
+    
+    /**
+     * @param {EventName} event_name
+     * @returns {void}
+     */
+    this.off = function (event_name) {
+        this.events.off(event_name);
+    }
+
+    /////////////////////////////////////////////
 
     this.setDelay = function(_delay) {
-        this._delay = this._delay;
+        this._delay = _delay;
     }
 
     this._onOutput = function (_o) {
-        process.stdout.write(String.fromCharCode(_o));
-     };
+        if(!this.io) {
+            console.log(String.fromCharCode(_o));
+        }
+        this.io?.setOutput(_o)
+    };
+    this._onInput = function (_i) {
+        return this.io?.getInput(_i) ?? 0;
+    };
     
     this.onOutput = function (_func) {
         this._onOutput = _func;
@@ -36,14 +88,9 @@ export default function OnlineBrainfuck(_memory, _delay = 0) {
         return this._isRunning;
     }
 
-    this.resetCode = function () {
+    this.reset = function () {
         this.code.reset();
         this._stop = false;
-        return this;
-    };
-
-    this.resetMemory = function () {
-        this.memory.reset();
         return this;
     };
 
@@ -72,6 +119,8 @@ export default function OnlineBrainfuck(_memory, _delay = 0) {
                 this.code.jumpMatching();
                 this.code.previous();
             }
+            
+            this.events.emit("operation", action(cmd));
 
             this.code.next();
             this._run(_callback, true);
