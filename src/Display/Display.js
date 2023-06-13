@@ -7,7 +7,7 @@ import BFPointer from "../Game/BFPointer.js";
 export default class Display {
     /** @type {Canvas} */ canvas;
     /** @type {Vector} */ position;
-    /** @type {number} */ zoom = 2;
+    /** @type {number} */ zoom = 1;
     /** @type {boolean} */ follow = false;
 
     /**
@@ -72,7 +72,7 @@ export default class Display {
         this.canvas.ctx.scale(this.zoom / 20, this.zoom / 20);
         this.canvas.ctx.translate(-this.position.x, -this.position.y);
 
-        const limit = Math.ceil(this.canvas.aspect * 10 / this.zoom + this.position.x);
+        const limit = Math.ceil(this.canvas.aspect * 10 / this.zoom);
 
         for(let i = -limit; i <= limit; i++) {
             let pointer = memory._pointer + i;
