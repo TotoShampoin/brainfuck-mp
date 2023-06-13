@@ -1,12 +1,4 @@
-function getElement(element) {
-    if(typeof(element) == "string") {
-        return document.getElementById(element);
-    }
-    if(element instanceof HTMLElement) {
-        return element;
-    }
-    return undefined;
-}
+import { getElement } from "../utils/HTML.js";
 
 export default class InputOutput {
     /** @type {HTMLInputElement|HTMLTextAreaElement} */ input_html;

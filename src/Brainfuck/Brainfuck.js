@@ -5,7 +5,7 @@ import Memory from "./Memory.js";
 import InputOutput from "./InputOutput.js";
 import EventManager from './EventManager.js';
 
-/** @typedef {"operation"} EventName */
+/** @typedef {"operation"|"delay-change"} EventName */
 /** @typedef {">"|"<"|"+"|"-"|"."|","|"["|"]"} BFOpCode */
 /** 
  * @typedef {Object} OperationEvent
@@ -29,7 +29,7 @@ export default function Brainfuck(memory, input_output) {
 
     /////////////////////////////////////////////
 
-    this.events.set("operation");
+    this.events.set("operation", "delay-change");
 
     const action = (opcode) => ({
         opcode,
@@ -59,6 +59,7 @@ export default function Brainfuck(memory, input_output) {
 
     this.setDelay = function(_delay) {
         this._delay = _delay;
+        this.events.emit("delay-change", _delay);
     }
 
     this._onOutput = function (_o) {
