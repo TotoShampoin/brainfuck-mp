@@ -8,6 +8,7 @@ export default class BFPointer {
     speed = 10;
     last_update_time = new Date().getTime();
     is_player = false;
+    op_code = "";
 
     constructor(is_player = false) {
         this.is_player = is_player;
@@ -16,14 +17,13 @@ export default class BFPointer {
     setSpeed(speed) {
         this.speed = speed;
     }
-
-    /**
-     * @param {number} pointer 
-     */
-    update(pointer) {
+    setPointer(pointer) {
         this.last_pointer = this.pointer;
         this.pointer = pointer;
         this.last_update_time = new Date().getTime();
+    }
+    setOpCode(op_code) {
+        this.op_code = op_code;
     }
 
     getPosition(time) {

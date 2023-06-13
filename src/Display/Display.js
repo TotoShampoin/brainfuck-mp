@@ -49,6 +49,14 @@ export default class Display {
             thickness: 0,
             color_fill: "#F00",
         });
+        this.canvas.circle({
+            x: 0, y: 2.16, r: .35,
+            filled: true,
+            thickness: 0,
+            color_fill: "#F00",
+        });
+        this.canvas.ctx.scale(1/16, 1/16);
+        this.canvas.text(bf.op_code, 0, 34.5, "6px Arial", "#FFF");
         this.canvas.restore();
     }
 

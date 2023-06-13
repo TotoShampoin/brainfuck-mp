@@ -54,6 +54,26 @@ export default class Canvas {
             this.ctx.fill();
         }
     }
+    circle({
+        x, y, r,
+        filled = true,
+        thickness = 0,
+        color_stroke = `#FFF`,
+        color_fill = `#000`
+    }) {
+        this.ctx.lineWidth = thickness;
+        this.ctx.strokeStyle = color_stroke;
+        this.ctx.fillStyle = color_fill;
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, r, 0, Math.PI*2);
+        this.ctx.closePath();
+        if(thickness > 0) {
+            this.ctx.stroke();
+        }
+        if(filled) {
+            this.ctx.fill();
+        }
+    }
     text(text, x, y, font = "16px Arial", color = "#000", [align_horizontal, align_vertical] = ["center", "middle"]) {
         this.ctx.font = font;
         this.ctx.fillStyle = color;

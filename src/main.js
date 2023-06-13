@@ -8,14 +8,14 @@ const brainfuck = new Brainfuck(memory, io);
 
 const me = new BFPointer(true);
 
-// brainfuck.on("operation", e => {
-//     me.update(memory._pointer);
-// })
+brainfuck.on("operation", e => {
+    me.setOpCode(e.opcode);
+})
 brainfuck.on("delay-change", delay => {
     me.setSpeed(parseInt(delay));
 })
 memory.on("move", pointer => {
-    me.update(pointer);
+    me.setPointer(pointer);
 });
 
 brainfuck.setDelay(100);
