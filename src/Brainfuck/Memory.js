@@ -1,6 +1,6 @@
 // Code derived from https://www.npmjs.com/package/brainfuck-js
 
-import EventManager from './EventManager.js';
+import EventManager from '../utils/EventManager.js';
 
 /** @typedef {"get"|"set"|"move"} EventName */
 
@@ -17,7 +17,7 @@ export default function Memory(_startPointer = 0) {
 
     /**
      * @param {EventName} event_name
-     * @param {(any) => void} callback {@link EventfulMemoryName}
+     * @param {(any) => void} callback
      * @returns {void}
      */
     this.on = function (event_name, callback) {

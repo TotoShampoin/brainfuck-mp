@@ -3,7 +3,7 @@
 import Code from "./Code.js";
 import Memory from "./Memory.js";
 import InputOutput from "./InputOutput.js";
-import EventManager from './EventManager.js';
+import EventManager from '../utils/EventManager.js';
 
 /** @typedef {"operation"|"delay-change"} EventName */
 /** @typedef {">"|"<"|"+"|"-"|"."|","|"["|"]"} BFOpCode */
@@ -40,7 +40,7 @@ export default function Brainfuck(memory, input_output) {
 
     /**
      * @param {EventName} event_name
-     * @param {(event: OperationEvent) => void} callback {@link EventfulMemoryName}
+     * @param {(event: OperationEvent) => void} callback {@link OperationEvent}
      * @returns {void}
      */
     this.on = function (event_name, callback) {
