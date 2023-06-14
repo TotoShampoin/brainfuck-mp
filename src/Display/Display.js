@@ -1,7 +1,7 @@
 import Canvas from "./Canvas.js";
 import { Vector, invlerp, remap } from "../utils/Math.js";
 
-import { Memory } from "../Brainfuck.js";
+import { Memory } from "../Brainfuck/index.js";
 import BFPointer from "../Game/BFPointer.js";
 
 export default class Display {
@@ -22,7 +22,11 @@ export default class Display {
         this.follow = follow ? follow : false;
     }
 
-    drawCase(pointer, value) {
+    drawCase(pointer, value, options = {
+        write_time: 1,
+        last_value: value
+    }) {
+        const {write_time, last_value} = options;
         this.canvas.save();
         this.canvas.ctx.translate(pointer, 0);
         this.canvas.ctx.scale(.475, .475);
@@ -34,7 +38,8 @@ export default class Display {
             color_stroke: "#000",
         });
         this.canvas.ctx.scale(1/16, 1/16);
-        this.canvas.text(value, 0, 0, "15px Arial", "#000");
+        this.canvas.text(value, 0, 0 - (1-write_time)*16, "15px Arial", `rgba(0, 0, 0, ${write_time})`);
+        this.canvas.text(last_value, 0, write_time*16, "15px Arial", `rgba(0, 0, 0, ${1-write_time})`);
         this.canvas.text(`${pointer}`, -16, -18, "6px Arial", "#000", ["left", "bottom"]);
         this.canvas.restore();
     }
@@ -67,6 +72,7 @@ export default class Display {
      * @param {BFPointer} me 
      */
     display(memory, brainfucks, me) {
+        const all_bf = [...brainfucks, me];
         const time = new Date().getTime();
 
         if(this.follow) {
@@ -85,10 +91,18 @@ export default class Display {
         for(let i = -limit; i <= limit; i++) {
             let pointer = memory._pointer + i;
             let data = memory._data[pointer] ?? 0;
-            this.drawCase(pointer, data);
+            const bf_reading = all_bf.find(bf => bf.pointer === pointer);
+            if(bf_reading) {
+                this.drawCase(pointer, data, {
+                    write_time: bf_reading.getWritetime(time),
+                    last_value: bf_reading.last_memory
+                });
+            } else {
+                this.drawCase(pointer, data);
+            }
         }
         
-        [...brainfucks, me].forEach(bf => {
+        all_bf.forEach(bf => {
             this.drawBF(bf, time);
         });
 

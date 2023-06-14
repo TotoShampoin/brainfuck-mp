@@ -32,11 +32,19 @@ export default function Memory(_startPointer = 0) {
         this.events.off(event_name);
     }
 
+    const emit = (type, last) => {
+        this.events.emit(type, {
+            pointer: this._pointer,
+            value: this._data[this._pointer],
+            last_value: last ?? this._data[this._pointer],
+        });
+    }
+
     /////////////////////////////////////////////
 
     this.goto = function(_pointer) {
         this._pointer = _pointer;
-        this.events.emit("move", _pointer);
+        emit("move");
     }
     this.startAt = function(_startPointer) {
         this._startPointer = _startPointer;
@@ -47,6 +55,18 @@ export default function Memory(_startPointer = 0) {
         this._data = {};
         this.events.emit("clear");
     }
+    this.getMemory = function(pointer) {
+        if (typeof this._data[pointer] === 'undefined') {
+            this._data[pointer] = 0;
+        }
+        return this._data[pointer];
+    }
+    this.setMemory = function(pointer, value) {
+        if (typeof this._data[pointer] === 'undefined') {
+            this._data[pointer] = 0;
+        }
+        this._data[pointer] = value;
+    }
 
     /////////////////////////////////////////////
 
@@ -55,7 +75,7 @@ export default function Memory(_startPointer = 0) {
         if (typeof this._data[this._pointer] === 'undefined') {
             this._data[this._pointer] = 0;
         }
-        this.events.emit("move", this._pointer);
+        emit("move");
     }
 
     this.previous = function () {
@@ -63,36 +83,39 @@ export default function Memory(_startPointer = 0) {
         if (typeof this._data[this._pointer] === 'undefined') {
             this._data[this._pointer] = 0;
         }
-        this.events.emit("move", this._pointer);
+        emit("move");
     }
 
     this.get = function () {
         if (typeof this._data[this._pointer] === 'undefined') {
             this._data[this._pointer] = 0;
         }
-        this.events.emit("get", this._pointer, this._data[this._pointer]);
+        emit("get");
         return this._data[this._pointer];
     }
 
     this.set = function (_value) {
+        const last = this._data[this._pointer];
         this._data[this._pointer] = (_value % 256 + 256) % 256;
-        this.events.emit("set", this._pointer, this._data[this._pointer]);
+        emit("set", last);
     }
     
     this.increase = function () {
         if (typeof this._data[this._pointer] === 'undefined') {
             this._data[this._pointer] = 0;
         }
+        const last = this._data[this._pointer];
         this._data[this._pointer] = ((this._data[this._pointer] + 1) % 256 + 256) % 256;
-        this.events.emit("set", this._pointer, this._data[this._pointer]);
+        emit("set", last);
     }
     
     this.decrease = function () {
         if (typeof this._data[this._pointer] === 'undefined') {
             this._data[this._pointer] = 0;
         }
+        const last = this._data[this._pointer];
         this._data[this._pointer] = ((this._data[this._pointer] - 1) % 256 + 256) % 256;
-        this.events.emit("set", this._pointer, this._data[this._pointer]);
+        emit("set", last);
     }
 };
 

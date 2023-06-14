@@ -1,4 +1,4 @@
-import { Brainfuck , InputOutput, Memory } from "./Brainfuck.js";
+import { Brainfuck , InputOutput, Memory } from "./Brainfuck/index.js";
 import Canvas from "./Display/Canvas.js";
 
 const $code = document.getElementById("code");
@@ -12,7 +12,7 @@ const $interval = document.getElementById("interval");
 
 const $canvas = document.getElementById("canvas");
 
-export const io = new InputOutput($input, $output);
+export const input_output = new InputOutput($input, $output);
 export const canvas = new Canvas($canvas, window.innerWidth, window.innerHeight);
 
 /**

@@ -1,40 +1,17 @@
-import { Brainfuck , Memory , InputOutput } from "./Brainfuck.js";
 import Display from "./Display/Display.js";
-import BFPointer from "./Game/BFPointer.js";
-import { makeEvents, io, canvas } from "./ui.js";
+import { canvas } from "./ui.js";
+import { memory, user } from "./user.js";
 
-const memory = new Memory(0);
-const brainfuck = new Brainfuck(memory, io);
-
-const me = new BFPointer(true);
-
-brainfuck.on("operation", e => {
-    me.setOpCode(e.opcode);
-})
-brainfuck.on("delay-change", delay => {
-    me.setSpeed(parseInt(delay));
-})
-memory.on("move", pointer => {
-    me.setPointer(pointer);
-});
-memory.on("clear", () => {
-    me.setPointer(memory._startPointer);
-    me.op_code = "";
-});
-
-brainfuck.setDelay(100);
-makeEvents(brainfuck, memory, io);
+// import { other } from "./test.js";
 
 const display = new Display(canvas);
 
 display.follow = true;
 
 function loop() {
-    display.display(memory, [], me);
+    display.display(memory, [], user);
     requestAnimationFrame(loop);
 }
 loop();
 
-window.memory = memory;
-window.canvas = canvas;
-window.display = display;
+window.user = user;
