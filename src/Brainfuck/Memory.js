@@ -2,7 +2,7 @@
 
 import EventManager from '../utils/EventManager.js';
 
-/** @typedef {"get"|"set"|"move"} EventName */
+/** @typedef {"get"|"set"|"move"|"goto"} EventName */
 
 export default function Memory(_startPointer = 0) {
     this._pointer = 0;
@@ -44,7 +44,7 @@ export default function Memory(_startPointer = 0) {
 
     this.goto = function(_pointer) {
         this._pointer = _pointer;
-        emit("move");
+        emit("goto");
     }
     this.startAt = function(_startPointer) {
         this._startPointer = _startPointer;
