@@ -92,6 +92,12 @@ export default class Network {
             data
         });
     }
+    sendDataTo(id, data) {
+        this.isConnectedTo(id)?.send({
+            type: "data",
+            data
+        });
+    }
 
     isThis(id) {
         return this.id === id;
