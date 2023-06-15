@@ -20,6 +20,7 @@ export default class Network {
         });
         this.peer.on("error", error => {
             this.events.emit("error", {error});
+            console.error(error);
         })
         this.peer.on("connection", conn => {
             this.addConnection(conn);
@@ -44,7 +45,7 @@ export default class Network {
     }
 
     connect(id) {
-        if(this.isConnectedTo(id) || this.isThis(id)) return;
+        if(this.hasConnection() || this.isConnectedTo(id) || this.isThis(id)) return;
         const conn = this.peer.connect(id);
         this.addConnection(conn);
     }
@@ -54,6 +55,7 @@ export default class Network {
         conn.close();
     }
     addConnection(conn) {
+        this.connected = true;
         this.connections.push(conn);
         conn.on("data", ({type, id, data, conns}) => {
             switch(type) {
@@ -79,6 +81,7 @@ export default class Network {
                 conns: this.connections.map(c => c.peer)
             });
         });
+        conn.on("error", console.error);
     }
 
     broadcast(data) {
@@ -104,6 +107,9 @@ export default class Network {
     }
     isConnectedTo(id) {
         return this.connections.find(c => c.peer === id);
+    }
+    hasConnection() {
+        return this.connections.length > 0;
     }
 };
 window.Network = Network;
