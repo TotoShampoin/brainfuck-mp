@@ -9,6 +9,18 @@ body {
 canvas {
     display: block;
 }
+label {
+    display: inline-block;
+    width: 5rem;
+}
+input {
+    display: inline-block;
+    width: 12rem;
+    box-sizing: border-box;
+}
+input.big {
+    width: 100%;
+}
 
 .brain {
     position: absolute;

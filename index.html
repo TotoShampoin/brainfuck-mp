@@ -11,17 +11,20 @@
         <textarea id="code" cols="30" rows="5" placeholder="code"></textarea><br>
         <textarea id="input" cols="30" rows="2" placeholder="input"></textarea><br>
         <textarea id="output" cols="30" rows="2" placeholder="output" readonly></textarea><br>
-        <input type="number" id="interval" min="10" max="1000" value="100" step="10" placeholder="Interval (ms)">
+        <label for="interval">Tick time: </label><input type="number" id="interval" min="50" max="1000" value="100" step="10" placeholder="Interval (ms)">
         <button type="button" id="start">Start</button>
         <button type="button" id="halt">Halt</button><br>
-        <input type="number" id="destination" value="0" placeholder="Destination">
+        <label for="destination">Teleport: </label><input type="number" id="destination" value="0" placeholder="Destination">
         <button type="button" id="goto">Go to</button>
     </div>
-    <div class="network">
-        <input type="text" id="id"><br>
-        <input type="text" id="your-id" readonly><br>
-        <button id="connect">Connect</button>
-    </div>
+    <form class="network" id="connect">
+        <input type="text" id="your-id" class="big" readonly>
+        <hr>
+        <label for="username">Username: </label><input type="text" id="username" placeholder="username"><br>
+        <label for="color">Color: </label><input type="color" id="color" placeholder="color"><br>
+        <label for="id">Connect to: </label><input type="text" id="id" placeholder="id"><br>
+        <button type="submit">Connect</button>
+    </form>
     <script src="libs/peerjs.min.js"></script>
     <script src="src/main.js" type="module"></script>
 </body>
