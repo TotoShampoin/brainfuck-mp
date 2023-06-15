@@ -9,11 +9,11 @@ export default class BFPointer {
     memory = 0;
     pointer = 0;
     speed = 10;
-    is_player = false;
     op_code = "";
+    peer_id = false;
 
-    constructor(is_player = false) {
-        this.is_player = is_player;
+    constructor(peer_id) {
+        this.peer_id = peer_id;
     }
 
     setSpeed(speed) {
@@ -35,7 +35,7 @@ export default class BFPointer {
 
     getPosition(time) {
         switch(this.op_code) {
-            case ">": case "<":
+            case ">": case "<": case "~":
                 return remap(this.last_update_time, this.last_update_time + this.speed, this.last_pointer, this.pointer, time);
             default:
                 return this.pointer;
