@@ -1,23 +1,29 @@
 import EventManager from "../utils/EventManager.js";
 
-/** @typedef {"data"|"connect"|"disconnect"} EventName */
+/** @typedef {"ready"|"error"|"data"|"connect"|"disconnect"} EventName */
 
 export default class Network {
     peer = new Peer();
     events = new EventManager();
     connections = [];
     id = "";
+    ready = new Promise((res, rej) => {
+        this.peer.on("open", () => res(true));
+        this.peer.on("error", () => rej());
+    });
 
     constructor() {
+        this.events.set("ready", "error", "data", "connect", "disconnect");
         this.peer.on("open", id => {
             this.id = id;
-            console.log(id);
+            this.events.emit("ready", {id});
         });
+        this.peer.on("error", error => {
+            this.events.emit("error", {error});
+        })
         this.peer.on("connection", conn => {
             this.addConnection(conn);
         });
-
-        this.events.set("data", "connect", "disconnect");
     }
 
     /**
