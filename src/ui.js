@@ -7,8 +7,9 @@ const $output = document.getElementById("output");
 
 const $start = document.getElementById("start");
 const $halt = document.getElementById("halt");
-const $reset = document.getElementById("reset");
 const $interval = document.getElementById("interval");
+const $destination = document.getElementById("destination");
+const $goto = document.getElementById("goto");
 
 const $canvas = document.getElementById("canvas");
 
@@ -31,11 +32,11 @@ export function makeEvents(brainfuck, memory, io) {
     $halt.addEventListener("click", e => {
         brainfuck.stop();
     });
-    $reset.addEventListener("click", e => {
-        memory.clear();
-    });
     $interval.addEventListener("change", e => {
         brainfuck.setDelay($interval.value);
+    });
+    $goto.addEventListener("click", e => {
+        memory.goto(parseInt($destination.value))
     });
 
     window.addEventListener("resize", e => {
