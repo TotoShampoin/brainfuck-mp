@@ -5,7 +5,7 @@ import Memory from "./Memory.js";
 import InputOutput from "./InputOutput.js";
 import EventManager from '../utils/EventManager.js';
 
-/** @typedef {"operation"|"delay-change"} EventName */
+/** @typedef {"operation"|"delay-change"|"stop"} EventName */
 /** @typedef {">"|"<"|"+"|"-"|"."|","|"["|"]"} BFOpCode */
 /** 
  * @typedef {Object} OperationEvent
@@ -29,7 +29,7 @@ export default function Brainfuck(memory, input_output) {
 
     /////////////////////////////////////////////
 
-    this.events.set("operation", "delay-change");
+    this.events.set("operation", "delay-change", "stop");
 
     const action = (opcode) => ({
         opcode,
@@ -40,7 +40,7 @@ export default function Brainfuck(memory, input_output) {
 
     /**
      * @param {EventName} event_name
-     * @param {(event: OperationEvent) => void} callback {@link OperationEvent}
+     * @param {(event: OperationEvent|number) => void} callback {@link OperationEvent}
      * @returns {void}
      */
     this.on = function (event_name, callback) {
@@ -58,8 +58,8 @@ export default function Brainfuck(memory, input_output) {
     /////////////////////////////////////////////
 
     this.setDelay = function(_delay) {
-        this._delay = _delay;
-        this.events.emit("delay-change", _delay);
+        this._delay = parseInt(_delay);
+        this.events.emit("delay-change", this._delay);
     }
 
     this._onOutput = function (_o) {
@@ -83,6 +83,7 @@ export default function Brainfuck(memory, input_output) {
 
     this.stop = function () {
         this._stop = true;
+        this.events.emit("stop");
     }
 
     this.isRunning = function () {
@@ -139,7 +140,11 @@ export default function Brainfuck(memory, input_output) {
         } else {
             this._stop = this._stop || !this.step();
             this._runAsync(this.run, _callback);                
-        } 
+        }
+
+        if(this._stop) {
+            this.events.emit("stop");
+        }
     }
 
     this._runAsync = function (/*_func, _arg1, _arg2...*/) {
