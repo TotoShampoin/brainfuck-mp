@@ -9,11 +9,11 @@ import BFPointer from "./Game/BFPointer.js";
 
 /** @type {BFPointer[]} */ const others = [];
 
-makeUIEvents(brainfuck, memory, input_output, network);
-makeConnectionEvents(brainfuck, memory, others);
-
 const display = new Display(canvas);
 display.follow = true;
+
+makeUIEvents(brainfuck, memory, input_output, network, user.user_data, display);
+makeConnectionEvents(brainfuck, memory, others, user.user_data);
 
 function loop() {
     display.display(memory, others, user);

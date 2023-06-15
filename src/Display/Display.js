@@ -43,25 +43,34 @@ export default class Display {
         this.canvas.text(`${pointer}`, -16, -18, "6px Arial", "#000", ["left", "bottom"]);
         this.canvas.restore();
     }
-    drawBF(bf, time) {
+    drawBF(bf, time, nb = 0) {
         const position = bf.getPosition(time);
         this.canvas.save();
         this.canvas.ctx.translate(position, 0);
         this.canvas.ctx.scale(1/2, 1/2);
+        if(!nb) {
+            this.canvas.polygon({
+                points: [[0, -1.1], [ .35, -2.1], [-.35, -2.1]],
+                filled: true,
+                thickness: 0,
+                color_fill: bf.user_data[1],
+            });
+        }
         this.canvas.polygon({
-            points: [[0, 1.1], [ .35, 2.1], [-.35,  2.1]],
+            points: [[-1.5, -2.1 - nb*.85], [ 1.5, -2.1 - nb*.85], [ 1.5, -2.1 - nb*.85 - .75], [-1.5, -2.1 - nb*.85 - .75]],
             filled: true,
-            thickness: 0,
-            color_fill: "#F00",
-        });
-        this.canvas.circle({
-            x: 0, y: 2.16, r: .35,
-            filled: true,
-            thickness: 0,
-            color_fill: "#F00",
-        });
+            thickness: .2,
+            color_fill: "#FFF",
+            color_stroke: bf.user_data[1],
+        })
+        // this.canvas.circle({
+        //     x: 0, y: 2.16, r: .35,
+        //     filled: true,
+        //     thickness: 0,
+        //     color_fill: "#F00",
+        // });
         this.canvas.ctx.scale(1/16, 1/16);
-        this.canvas.text(bf.op_code, 0, 34.5, "6px Arial", "#FFF");
+        this.canvas.text(bf.user_data[0], 0, -36 - nb * 13.6, "8px Arial", "#000", ["center", "bottom"]);
         this.canvas.restore();
     }
 
@@ -72,21 +81,22 @@ export default class Display {
      * @param {BFPointer} me 
      */
     display(memory, brainfucks, me) {
-        const all_bf = [...brainfucks, me];
+        const all_bf = [me, ...brainfucks];
         const time = new Date().getTime();
+        const zoom = (this.zoom > 0) ? this.zoom : (this.zoom < 0) ? -1/this.zoom : 1;
 
         if(this.follow) {
             this.position.x = me.getPosition(time);
-            this.position.y = 0;
+            this.position.y = -0.5;
         }
 
         this.canvas.clear();
 
         this.canvas.save();
-        this.canvas.ctx.scale(this.zoom / 20, this.zoom / 20);
+        this.canvas.ctx.scale(zoom / 20, zoom / 20);
         this.canvas.ctx.translate(-this.position.x, -this.position.y);
 
-        const limit = Math.ceil(this.canvas.aspect * 10 / this.zoom);
+        const limit = Math.ceil(this.canvas.aspect * 10 / zoom);
 
         for(let i = -limit; i <= limit; i++) {
             let pointer = memory._pointer + i;
@@ -102,8 +112,11 @@ export default class Display {
             }
         }
         
+        let places = {};
         all_bf.forEach(bf => {
-            this.drawBF(bf, time);
+            const nb = places[bf.pointer] ?? 0;
+            this.drawBF(bf, time, nb);
+            places[bf.pointer] = nb + 1;
         });
 
         this.canvas.restore();

@@ -23,14 +23,15 @@ export const network = new Network();
  * @param {Brainfuck} brainfuck
  * @param {Memory} memory 
  * @param {BFPointer[]} pointers 
+ * @param {[name: string, color: string]} user_data
  */
-export function makeConnectionEvents(brainfuck, memory, pointers) {
+export function makeConnectionEvents(brainfuck, memory, pointers, user_data) {
     /**
      * @param {BFPointer} bf 
      * @param {ConnectionData} data 
      */
     function parseData(bf, data) {
-        console.log(bf, data);
+        // console.log(bf, data);
         switch(data.action) {
         case "operation": {
             bf.setOpCode(data.opcode);
@@ -57,27 +58,29 @@ export function makeConnectionEvents(brainfuck, memory, pointers) {
             }
             network.sendData({
                 action: "sync",
+                username: user_data[0],
+                color: user_data[1],
                 pointer: memory._pointer,
                 speed: brainfuck._delay,
             });
         } case "sync": {
             bf.setPointer(data.pointer);
             bf.setSpeed(data.speed);
-        } break;
-        case "profile": {
-            bf.name = data.username;
-            bf.color = data.color;
+        } case "profile": {
+            bf.user_data[0] = data.username;
+            bf.user_data[1] = data.color;
         } break;
         default: {
-            console.log(bf.peer_id, data);
+            console.info(bf.peer_id, data);
         } break;
         }
-        console.log(bf.last_update_time + bf.speed - new Date().getTime());
     }
 
     function synchronize() {
         network.sendData({
             action: "syncmem",
+            username: user_data[0],
+            color: user_data[1],
             pointer: memory._pointer,
             speed: brainfuck._delay,
             memory: memory._data,

@@ -1,8 +1,7 @@
 import { remap } from "../utils/Math.js";
 
 export default class BFPointer {
-    name = "brainfukc";
-    color = "#000";
+    user_data = ["username", "#000"];
     last_update_time = new Date().getTime();
     last_pointer = 0;
     last_memory = 0;
